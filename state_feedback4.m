@@ -180,9 +180,7 @@ Acont = A_t - N - B_t*Kh;
 % Optimization
 
 % K = pso_var(T,A_t,B_t);
-% K = fminunc(@(K) objectivefcn1(K,T,A_t,B_t),[73.2581  -27.7655   35.2485   -0.6214]);
-Q=diag([1 100 0 0]);
-[K,~,~] = lqr(A0,B0,Q,0.001,0);
+K = fminunc(@(K) objectivefcn1(K,T,A_t,B_t),[73.2581  -27.7655   35.2485   -0.6214]);
 Kh = blkdiag(K,K,K,K,K);
 
 Acont = A_t - N - B_t*Kh;

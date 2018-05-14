@@ -121,11 +121,11 @@ K = [0  0  0  0];
 [t,z1] = ode45(@(t,z1) original_system(t,z1,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K,step_time),0:ode_step:T_sim,init);
 
-K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
+% K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
  
 % K = [-2.9415   16.9707    0.3163   -8.6888];
 % K = [92.2150  -15.2291    6.3378    2.2090];
-K = [71.3339 -811.9629   59.9168  -10.5123];
+K = [204.2152   58.9257  -27.3738   25.5122];
 % K = [71.507500 -10.814800 6.076500 2.234900];
 % K = 1000*[0.0761    1.0623    0.0010    0.0131];
 K_lin = K;
