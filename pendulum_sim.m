@@ -5,14 +5,14 @@ clc
 
 global Mp Mc L Beq Bp kg kt km rm rmp g Ks
 
-Mp = 0.21;%
-Mc =0.57;
-L =0.3;%
+Mp  = 0.21;%
+Mc  =0.57;
+L   =0.3;%
 Beq =4.3;
-kg =3.71;
-kt =0.00767;
-km =0.00767;
-rm =2.6;
+kg  =3.71;
+kt  =0.00767;
+km  =0.00767;
+rm  =2.6;
 rmp =6.35*10^-3;
 
 
@@ -102,12 +102,6 @@ else
     
 end
 
-
-% K = [56.9945  -21.9970   13.2458    5.0469];
-% K = [73.2581  -27.7655   35.2485   -0.6214];
-% K = [32.9364    0.2393   19.6051   -0.2001];%linear
-% K = [12.5974    0.0073   -4.0748    0.0009];%minimization of max eigenvalue
-% K = [-2.6482   29.1832   -9.4663   11.5624];
 %%
 % initial conditions
 dalpha = 0.1;%randn*abs(k)/10
@@ -123,11 +117,11 @@ K = [0  0  0  0];
 
 % K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
  
-% K = [-2.9415   16.9707    0.3163   -8.6888];
-% K = [92.2150  -15.2291    6.3378    2.2090];
+K = [92.2150  -15.2291    0    0];
 K = [204.2152   58.9257  -27.3738   25.5122];
+% -27.3738   25.5122
 % K = [71.507500 -10.814800 6.076500 2.234900];
-% K = 1000*[0.0761    1.0623    0.0010    0.0131];
+K = [73.2581  -27.7655   35.2485   -0.6214];
 K_lin = K;
 K_org = K;
 
@@ -311,6 +305,7 @@ plot(t,V_f,'m');
 hold on
 plot(t,V_o'+V_f,'g')
 legend('openloop input','feedback','inp')
+grid on
 
 figure(20)
 subplot(2,1,1)
@@ -343,7 +338,7 @@ x(step_time/ode_step+1:length(t)) = x_step(step_time/ode_step+1:length(t))-ofs*a
 % ref(step_time/ode_step+1:length(t),1) = ofs*ones(step_time/ode_step+1:length(t));
 
 figure(30)
-subplot(2,1,1)
+subplot(2,2,1)
 plot(t,z(:,1)-x,'b')
 ylabel('position(m)')
 hold on
@@ -356,7 +351,7 @@ title('error')
 legend('original','linear')
 grid on
 
-subplot(2,1,2)
+subplot(2,2,2)
 plot(t,z(:,2)-alpha,'b')
 xlabel('t(sn)')
 ylabel('angle(rad)')
@@ -367,31 +362,54 @@ grid on
 % hold on
 % plot(t,-V_f/100,'c')
 
+subplot(2,2,3)
+plot(t,z(:,3)-x_dl,'b')
+ylabel('velocity')
+grid on
+% hold on
+% plot(t,-V_f/100,'c')
+% hold on
+title('error')
+legend('original','linear')
+grid on
+
+subplot(2,2,4)
+plot(t,z(:,4)-alpha_dl,'b')
+ylabel('angular velocity')
+grid on
+% hold on
+% plot(t,-V_f/100,'c')
+% hold on
+title('error')
+legend('original','linear')
+grid on
+
 s=1;
 figure(31)
 subplot(2,1,1)
-plot(t,z(:,1)-x,'b','LineWidth',s)
+plot(t,z(:,1),'b','LineWidth',s)
 set(gca,'FontSize',12)
 ylabel('pozisyon(m)','FontSize',14)
 hold on
-plot(t,z1(:,1)-x,'m','LineWidth',s)
+plot(t,z1(:,1),'m','LineWidth',s)
 grid on
 legend('geri beslemeli','geri beslemesiz')
 
 
 subplot(2,1,2)
-plot(t,z(:,2)-alpha,'b','LineWidth',s)
+plot(t,z(:,2),'b','LineWidth',s)
 xlabel('t(sn)','FontSize',14)
 ylabel('açý(rad)','FontSize',14)
 grid on
 hold on
-plot(t,z1(:,2)-alpha,'m','LineWidth',s)
+plot(t,z1(:,2),'m','LineWidth',s)
 grid on
 
 figure(40)
 subplot(2,1,1)
 plot(t,z(:,3))
 title('translational velocity')
+grid on
 % hold on
 % plot(t,y(:,3),'m')
 % hold on
@@ -400,6 +418,7 @@ title('translational velocity')
 subplot(2,1,2)
 plot(t,z(:,4))
 title('angular velocity')
+grid on
 % hold on
 % plot(t,y(:,4),'m')
 % hold on

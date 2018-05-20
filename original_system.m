@@ -47,7 +47,7 @@ end
 e = -[x-x_desired alpha-alpha_desired x_d-x_d_desired alpha_d-alpha_d_desired]';
 
 V_f = K*e + z(5) + z(6);
-V = V_o + V_f;
+V = V_o+V_f;
 
 denom = (Mc+Mp)*I+Mc*Mp*L^2+Mp^2*L^2*(sin(alpha))^2;
 

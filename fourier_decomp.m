@@ -242,16 +242,16 @@ B_5 = [0; 0; fb2(1,loc(5))*exp(-angle(fb(1,loc(5)))*1i)/2;...
 
     
  A_t =   [A0 A_1 A_2 A_3 A_4;
-             A1 A0 A_1 A_2 A_3;
-             A2 A1 A0 A_1 A_2;
-             A3 A2 A1 A0 A_1;
-             A4 A3 A2 A1 A0];
+          A1 A0  A_1 A_2 A_3;
+          A2 A1  A0  A_1 A_2;
+          A3 A2  A1  A0  A_1;
+          A4 A3  A2  A1  A0];
 
 B_t =    [B0 B_1 B_2 B_3 B_4;
-             B1 B0 B_1 B_2 B_3;
-             B2 B1 B0 B_1 B_2;
-             B3 B2 B1 B0 B_1;
-             B4 B3 B2 B1 B0];
+          B1 B0  B_1 B_2 B_3;
+          B2 B1  B0  B_1 B_2;
+          B3 B2  B1  B0  B_1;
+          B4 B3  B2  B1  B0];
    
 % load('A_toep_i.mat')
 % load('B_toep_i.mat')
@@ -273,7 +273,7 @@ N = (2*pi/T_x)*blkdiag(-2i*eye(4),-1i*eye(4),0i*eye(4),1i*eye(4),2i*eye(4));
 K = [73.2581  -27.7655   35.2485   -0.6214];
 p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
 % p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
-K=place(A0,B0,p)
+% K=place(A0,B0,p)
 % Q=diag([1 100 0 0]);
 % [K,~,~] = lqr(A0,B0,Q,0.1,0)
 % K = [15.1984   82.2251   22.3265   86.1642];
@@ -311,4 +311,8 @@ legend('açýk devre','kapalý devre','temel harmonik')
 grid on
 
 % grid on
+sys=ss(A_t-N,B_t,C,D);
 
+C=eye(20,20);
+D=zeros(20,5);
+htfs=idtf(sys);
