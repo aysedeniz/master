@@ -33,11 +33,11 @@ Acont = A_t - N - B_t*Kh;
 eigenvalues = eig(Acont);
 
 eigmax = max(real(eigenvalues));
-
-if eigmax <-0.25 && K(1)>0
-    f = 0
-else
-    f = 10+abs(eigmax+1)^2
-end
+f = eigmax;
+% if eigmax <-0.25 && K(1)>0
+%     f = 0;
+% else
+%     f = 10+abs(eigmax+1)^2;
+% end
 
 end

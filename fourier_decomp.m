@@ -310,9 +310,21 @@ plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
 legend('açýk devre','kapalý devre','temel harmonik')
 grid on
 
+% K = [ 0 0 0 0 ];
+% for j = 1:100
+% %     73.2581  -27.7655   35.2485   -0.6214
+%     
+%     cost(j)= objectivefcn1(K,T_x,A_t,B_t);
+%     K = K + [1 -0.4 0.5 -0.01];
+% end
+% j=1:100;
+% figure
+% plot(j,cost)
 % grid on
-sys=ss(A_t-N,B_t,C,D);
+% 
 
 C=eye(20,20);
 D=zeros(20,5);
+sys=ss(A_t-N,B_t,C,D);
 htfs=idtf(sys);
+
