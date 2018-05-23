@@ -33,7 +33,9 @@ Acont = A_t - N - B_t*Kh;
 eigenvalues = eig(Acont);
 
 eigmax = max(real(eigenvalues));
-f = eigmax;
+eigmin = min(real(eigenvalues));
+f = 4000*eigmax+0.5*eigmin+5*norm(K(3:4))+norm(K(1:2));
+
 % if eigmax <-0.25 && K(1)>0
 %     f = 0;
 % else
