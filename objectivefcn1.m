@@ -24,17 +24,18 @@ function f = objectivefcn1(K,T_angle,A_t,B_t)
 %     f = f1*100 + f2;
 
 %% Inverted obj fcn
-n = length(A_t)/5;
-N = (2*pi/T_angle)*blkdiag(-2i*eye(n),-1i*eye(n),0i*eye(n),1i*eye(n),2i*eye(n));
-Kh = blkdiag(K,K,K,K,K);
+% n = length(A_t)/5;
+% N = (2*pi/T_angle)*blkdiag(-2i*eye(n),-1i*eye(n),0i*eye(n),1i*eye(n),2i*eye(n));
+% Kh = blkdiag(K,K,K,K,K);
+% 
+% Acont = A_t - N - B_t*Kh;
 
-Acont = A_t - N - B_t*Kh;
-
-eigenvalues = eig(Acont);
-
-eigmax = max(real(eigenvalues));
-eigmin = min(real(eigenvalues));
-f = 4000*eigmax+0.5*eigmin+5*norm(K(3:4))+norm(K(1:2));
+% eigenvalues = eig(Acont);
+% 
+% eigmax = max(real(eigenvalues));
+% eigmin = min(real(eigenvalues));
+% f = 4000*eigmax+0.5*eigmin+7*norm(K(3:4))+norm(K(1:2));
+f = norm(K(4));
 
 % if eigmax <-0.25 && K(1)>0
 %     f = 0;

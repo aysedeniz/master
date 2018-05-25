@@ -1,11 +1,17 @@
-function [c,ceq]=nlc(K,T_angle,A_t,B_t)
-n = length(A_t)/5;
-N = (2*pi/T_angle)*blkdiag(-2i*eye(n),-1i*eye(n),0i*eye(n),1i*eye(n),2i*eye(n));
-Kh = blkdiag(K,K,K,K,K);
+function [c,ceq] = nlc(K,A_t,B_t,T_angle)
+    n = length(A_t)/5;
+    N = (2*pi/T_angle)*blkdiag(-2i*eye(n),-1i*eye(n),0i*eye(n),1i*eye(n),2i*eye(n));
+    Kh = blkdiag(K,K,K,K,K);
 
-Acont = A_t - N - B_t*Kh;
+    Acont = A_t - N - B_t*Kh;
 
-eigenvalues = eig(Acont);
+    eigenvalues = eig(Acont);
 
-c = max(real(eigenvalues))+0.01;
-ceq =[];
+    eigmax = max(real(eigenvalues));
+    eigmin = min(real(eigenvalues));
+    ceq = [];
+    c(1) = eigmin+120;
+    c(2) = eigmax+0.25;
+    c(3) = norm(K(1:2))-80;
+    c(4) = K(3)-15;
+end
