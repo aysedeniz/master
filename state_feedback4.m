@@ -171,14 +171,14 @@ B_t =    [B0 B_1 B_2 B_3 B_4;
     
 N = (2*pi/T)*blkdiag(-2i*eye(4),-1i*eye(4),0i*eye(4),1i*eye(4),2i*eye(4));
 
-K = [73.2581  -27.7655   35.2485   -0.6214];
+% K = [73.2581  -27.7655   35.2485   -0.6214];
 
-Kh = blkdiag(K,K,K,K,K);
+% Kh = blkdiag(K,K,K,K,K);
 
-Acont = A_t - N - B_t*Kh;
+% Acont = A_t - N - B_t*Kh;
 % eigenval = eig(A_t)
 % Pole placement
-p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
+% p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
 % K=place(A0,B0,p);
 % Optimization
 % K = pso_var(T,A_t,B_t);
@@ -187,7 +187,8 @@ p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
 % Constrained optimization
 lb = [0 -200 -20 -20];
 ub = [200 100 20 20];
-K = fmincon(@(K) objectivefcn1(K,T,A_t,B_t),[0  0   0   0],[],[],[],[],lb,ub,@(K) nlc(K,A_t,B_t,T))
+K0 = [100 100 -100 -100];
+K = fmincon(@(K) objectivefcn1(K,T,A_t,B_t),K0,[],[],[],[],lb,ub,@(K) nlc(K,A_t,B_t,T))
 Kh = blkdiag(K,K,K,K,K);
 
 Acont = A_t - N - B_t*Kh;
