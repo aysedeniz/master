@@ -187,7 +187,7 @@ N = (2*pi/T)*blkdiag(-2i*eye(4),-1i*eye(4),0i*eye(4),1i*eye(4),2i*eye(4));
 % Constrained optimization
 lb = [0 -200 -20 -20];
 ub = [200 100 20 20];
-K0 = [100 100 -100 -100];
+K0 = [rand*200-100 rand*200-100 rand*200-100 rand*200-100];
 K = fmincon(@(K) objectivefcn1(K,T,A_t,B_t),K0,[],[],[],[],lb,ub,@(K) nlc(K,A_t,B_t,T))
 Kh = blkdiag(K,K,K,K,K);
 

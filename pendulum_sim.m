@@ -16,7 +16,7 @@ rm  =2.6;
 rmp =6.35*10^-3;
 
 
-T_sim = 20;
+T_sim = 30;
 step_time = T_sim/2;
 
 t = 0;
@@ -450,8 +450,8 @@ hold on
 quiver(z(P,1),z(P,2),z(P,3)/100,z(P,4)/100,'m','MaxHeadSize',2000,'LineWidth',1.2)
 grid on
 
-figure
-subplot(2,1,1)
-plot(t,z(:,5))
-subplot(2,1,2)
-plot(t,z(:,6))
+% figure
+% subplot(2,1,1)
+% plot(t,z(:,5))
+% subplot(2,1,2)
+% plot(t,z(:,6))

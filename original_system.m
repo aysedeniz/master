@@ -65,20 +65,7 @@ x_dd = (nom_x1+nom_x2+nom_x3)/denom;
 alpha_dd = (nom_alpha1+nom_alpha2+nom_alpha3)/denom;
 Kix = 0;
 Kia = 0;
-if t>10
-Kix = 1;
-Kia = 1;
-end
-% if e(1)>0
-%     Kix = -5;
-% else
-%     Kix = 5;
-% end
-% if e(2)>0
-%     Kia = -10;
-% else
-%     Kia = 10;
-% end
+
 eix = Kix*e(1);
 eia = Kia*e(2);
 dxdt = [x_d alpha_d x_dd alpha_dd eix eia]';
