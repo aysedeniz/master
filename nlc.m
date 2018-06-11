@@ -11,6 +11,6 @@ function [c,ceq] = nlc(K,A_t,B_t,T_angle)
     eigmin = min(real(eigenvalues));
     ceq = [];
     c(1) = eigmin+80;
-    c(2) = eigmax+0.4;
+    c(2) = eigmax+0.25;
     c(3) = norm(K(1:3))-80;
 end
