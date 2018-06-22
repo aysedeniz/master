@@ -131,6 +131,14 @@ K_org = K;
 [t,z] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_org,step_time),0:ode_step:T_sim,init);
 
+asd = z(:,1)-(ofs + a*sin(b*t+phase*i+phase_ofs));
+for j = 1:(length(z(:,1))-200)
+    z_smooth(j) = mean(asd(j:j+200));
+end
+ figure
+ plot(z_smooth'-y(1:length(z_smooth),1))
+ figure
+ plot(z_smooth')
 %%
 % xn = z(1:T_sim/(2*ode_step)+1,2);
 % alphan = z(T_sim/(2*ode_step)+1:end,2);
