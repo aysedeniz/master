@@ -1,8 +1,0 @@
-function [val, terminate, direction] = event_unstable(t,z)
-    if abs(z(1)) > 10
-        
-    else
-    end
-    terminate = 1;
-    direction = 0;
-end
