@@ -1,5 +1,5 @@
 
-function err = pend_sim(K)
+function err = pend_sim(K,T)
 global Mp Mc L Beq Bp kg kt km rm rmp g Ks
 
 Mp  = 0.21;%
@@ -12,7 +12,9 @@ km  =0.00767;
 rm  =2.6;
 rmp =6.35*10^-3;
 
-
+if nargin<2
+    T = 0.2;
+end
 T_sim = 30;
 step_time = T_sim/2;
 
@@ -65,7 +67,7 @@ else
     Bp = 0.1;
     g = 9.8;
     %% reference
-    T_angle = 0.2;
+    T_angle = T;
     c = 0.1;
     d = 2*pi/T_angle;
     [amp, T_x, phase, ofs] = find_position(c, T_angle, k);
@@ -107,14 +109,100 @@ init = [x_l+dx alpha_l+dalpha x_dl alpha_dl 0 0];
 init_l = [dx dalpha 0 0];
 ode_step = 0.001;
 
-K_lin = K;
+K_lin = K
 K_org = K;
 
-[t,y] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
-    ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l);
+opt    = odeset('Events', @event_unstable);
 
-[t,z] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
-    ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_org,step_time),0:ode_step:T_sim,init);
+[t,z,~,~,ie] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+    ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_org,step_time),0:ode_step:T_sim,init,opt);
+ie
+if isempty(ie)
+    [t,y] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+        ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l);
+
+    x = z(:,1)-(ofs + a*sin(b*t+phase*i+phase_ofs));
+    for j = 1:(length(z(:,1))-200)
+        x_smooth(j) = mean(x(j:j+200));
+    end
+
+    diff_x = x_smooth'-y(1:length(x_smooth),1);
+
+    alpha = pi*k+c*sin(d*t+phase*abs(i-1));
+    for j = 1:(length(z(:,2))-200)
+        alpha_smooth(j) = mean(alpha(j:j+200));
+    end
+
+    diff_alpha = alpha_smooth'-y(1:length(alpha_smooth),2);
+
+    err = (sum(abs(diff_x))+sum(abs(diff_alpha)))/10000
+else
+    err = 10000
+end
+x_l = ofs_l*i+a_l*sin(b_l*t+phase_l*i);
+x_dl = a_l*b_l*cos(b_l*t+phase_l*i);
+
+alpha_l = pi*k+c_l*sin(d_l*t+phase_l*abs(i-1));
+alpha_dl = c_l*d_l*cos(d_l*t+phase_l*abs(i-1));
+
+x_step = ofs +a*sin(b*t+phase*i+phase_ofs);
+x_dstep = a*b*cos(b*t+phase*i+phase_ofs);
+
+alpha_step = pi*k+c*sin(d*t+phase*abs(i-1));
+alpha_dstep = c*d*cos(d*t+phase*abs(i-1));
+
+x(1:step_time/ode_step,1) = x_l(1:step_time/ode_step);
+x(step_time/ode_step+1:length(t)) = x_step(step_time/ode_step+1:length(t));
+xy(1:step_time/ode_step,1) = x_l(1:step_time/ode_step);
+xy(step_time/ode_step+1:length(t)) = x_step(step_time/ode_step+1:length(t))-ofs+ ofs_l*i;
 
 
+alpha(1:step_time/ode_step,1) = alpha_l(1:step_time/ode_step);
+alpha(step_time/ode_step+1:length(t)) = alpha_step(step_time/ode_step+1:length(t));
+
+if nargin == 2
+%     figure
+%     subplot(2,1,1)
+%     plot(t,z(:,1))
+%     hold on
+%     plot(t,x,'r')
+%     title('position')
+%     hold on
+%     plot(t,y(:,1)+xy,'m')
+%     % hold on
+%     % plot(t,V_f/10,'c')
+%     legend('original','reference','linear')
+%     grid on
+% 
+%     subplot(2,1,2)
+%     plot(t,z(:,2))
+%     hold on
+%     plot(t,alpha,'r')
+%     hold on
+%     plot(t,y(:,2)+alpha,'m')
+%     title('angle')
+%     grid on
+figure
+subplot(2,1,1)
+plot(t,z(:,1)-x,'b')
+ylabel('position(m)')
+hold on
+plot(t,y(:,1)-(x-x_l),'m')
+grid on
+% hold on
+% plot(t,-V_f/100,'c')
+% hold on
+title('error')
+legend('original','linear')
+grid on
+
+subplot(2,1,2)
+plot(t,z(:,2)-alpha,'b')
+xlabel('t(sn)')
+ylabel('angle(rad)')
+grid on
+hold on
+plot(t,y(:,2),'m')
+grid on
+end
 end

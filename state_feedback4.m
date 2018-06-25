@@ -195,6 +195,7 @@ Acont = A_t - N - B_t*Kh;
 eigenval = eig(A_t-N);
 
 eigenvalues = eig(Acont)
+
 % figure
 % plot(real(eigenval),imag(eigenval),'om','MarkerSize',10)
 % hold on
