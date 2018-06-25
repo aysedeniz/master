@@ -1,12 +1,13 @@
 % Frequency search
 close all
 clc
+clear
 
 for j = 1:20
     
     K = [69.3726  -34.4590   20.0000    0.5004];
-    T = j*0.1;
-    pend_sim(K,T);
+    T = j*0.02;
+    [err(j), conv_err(j)] = pend_sim(K,T);
 
 k = 1;
 n = 1;
@@ -170,3 +171,11 @@ plot(real(eig(A0)),imag(eig(A0)),'*b')
 legend('aç?k devre','kapal? devre','temel harmonik')
 grid on
 end
+
+figure
+subplot(2,1,1)
+plot(err)
+grid on
+subplot(2,1,2)
+plot(conv_err)
+grid on

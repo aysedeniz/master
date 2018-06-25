@@ -1,5 +1,5 @@
 
-function err = pend_sim(K,T)
+function [err, conv_err] = pend_sim(K,T)
 global Mp Mc L Beq Bp kg kt km rm rmp g Ks
 
 Mp  = 0.21;%
@@ -126,17 +126,20 @@ if isempty(ie)
         x_smooth(j) = mean(x(j:j+200));
     end
 
-    diff_x = x_smooth'-y(1:length(x_smooth),1);
-
+    diff_x_smooth = x_smooth'-y(1:length(x_smooth),1);
+    diff_x = x(1:length(x_smooth))-y(1:length(x_smooth),1);
     alpha = pi*k+c*sin(d*t+phase*abs(i-1));
     for j = 1:(length(z(:,2))-200)
         alpha_smooth(j) = mean(alpha(j:j+200));
     end
 
-    diff_alpha = alpha_smooth'-y(1:length(alpha_smooth),2);
-
-    err = (sum(abs(diff_x))+sum(abs(diff_alpha)))/10000
+    diff_alpha_smooth = alpha_smooth'-y(1:length(alpha_smooth),2);
+    diff_alpha = alpha(1:length(alpha_smooth))-y(1:length(alpha_smooth),2);
+    normal = sum(abs(y(1:length(alpha_smooth),1))+abs(y(1:length(alpha_smooth),2)));
+    conv_err = (sum(abs(diff_x_smooth))+sum(abs(diff_alpha_smooth)))/normal
+    err = (sum(abs(diff_x)+sum(abs(diff_alpha))))/normal
 else
+    conv_err = 10000
     err = 10000
 end
 x_l = ofs_l*i+a_l*sin(b_l*t+phase_l*i);
