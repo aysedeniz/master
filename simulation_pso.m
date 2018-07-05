@@ -1,7 +1,8 @@
-% variable state size PSO
-function K = pso_sim(T_alpha,ca,phase,T_x,cx,i,n)
-swarm_size = 32;
-maxiter = 100;
+clear
+close all
+clc
+swarm_size = 8;
+maxiter = 10;
 fbest = 2*10^7;
 fb = zeros(1,swarm_size);
 c1 = 2;
@@ -41,10 +42,8 @@ for j = 1:maxiter
             end
         end
     end
-
+j
 end
          K = Kgbest;
          display("-------------------------------------end----------------------------------------")
          K = fminunc(@pend_sim,Kgbest);
-
-end

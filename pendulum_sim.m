@@ -117,7 +117,7 @@ K = [0  0  0  0];
 
 % K0 = [60  -30   10.0000    1];
 % 69.3726  -34.4590   20.0000    0.5004
-state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
+% K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k);
  
 % K = [92.2150  -15.2291    0    0];
 % K = [204.2152   58.9257  -27.3738   25.5122];
@@ -125,7 +125,8 @@ state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
 % K = [71.507500 -10.814800 6.076500 2.234900];
 % K0 = [0 0 0 0];
 % K = pso_sim(T_angle,c_l,phase_l,T_x,a,i,k)
-% K = [77.2356  -27.2081   -0.7351    2.3993];
+K = [80.5215  446.1720   39.4936   24.1720];
+% K=[61.8840  -33.5758    4.7391    3.0605];
 K_lin = K;
 K_org = K;
 
@@ -387,6 +388,12 @@ grid on
 title('error')
 legend('original','linear')
 grid on
+
+figure
+subplot(2,1,1)
+plot(t,(z(:,1)-x)-(y(:,1)-(x-x_l)))
+subplot(2,1,2)
+plot(t,(z(:,2)-alpha)-(y(:,2)))
 
 s=1;
 figure(31)

@@ -112,36 +112,43 @@ ode_step = 0.001;
 K_lin = K
 K_org = K;
 
-opt    = odeset('Events', @event_unstable);
+opt_lin    = odeset('Events', @event_unstable);
 
-[t,z,~,~,ie] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+[t,y,~,~,ie] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+        ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l,opt_lin);
+
+if isempty(ie) && mean(y(floor(2*length(y(:,2))/3),2))<0.01
+opt    = odeset('Events', @event_unstable1);
+    [t,z,~,~,ie] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_org,step_time),0:ode_step:T_sim,init,opt);
-ie
-if isempty(ie)
-    [t,y] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
-        ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l);
+    if isempty(ie) && abs(mean(z(floor(2*length(z(:,2))/3),2))-pi)< 0.01 && abs(mean(z(floor(2*length(z(:,1))/3),1)))< 0.002
+        x = z(:,1)-(ofs + a*sin(b*t+phase*i+phase_ofs));
+        for j = 1:(length(z(:,1))-200)
+            x_smooth(j) = mean(x(j:j+200));
+        end
 
-    x = z(:,1)-(ofs + a*sin(b*t+phase*i+phase_ofs));
-    for j = 1:(length(z(:,1))-200)
-        x_smooth(j) = mean(x(j:j+200));
+        diff_x_smooth = x_smooth'-y(1:length(x_smooth),1);
+        diff_x = x(1:length(x_smooth))-y(1:length(x_smooth),1);
+        alpha = pi*k+c*sin(d*t+phase*abs(i-1));
+        for j = 1:(length(z(:,2))-200)
+            alpha_smooth(j) = mean(alpha(j:j+200));
+        end
+
+        diff_alpha_smooth = alpha_smooth'-y(1:length(alpha_smooth),2);
+        diff_alpha = alpha(1:length(alpha_smooth))-y(1:length(alpha_smooth),2);
+        normal = sum(norm(y(1:length(alpha_smooth),1))+norm(y(1:length(alpha_smooth),2)));
+        conv_err = (sum(norm(diff_x_smooth))+sum(norm(diff_alpha_smooth)))/normal
+        err = (sum(norm(diff_x)+sum(norm(diff_alpha))))/normal
+       
+    else
+        conv_err = 10^15
+        err = 10^15
     end
-
-    diff_x_smooth = x_smooth'-y(1:length(x_smooth),1);
-    diff_x = x(1:length(x_smooth))-y(1:length(x_smooth),1);
-    alpha = pi*k+c*sin(d*t+phase*abs(i-1));
-    for j = 1:(length(z(:,2))-200)
-        alpha_smooth(j) = mean(alpha(j:j+200));
-    end
-
-    diff_alpha_smooth = alpha_smooth'-y(1:length(alpha_smooth),2);
-    diff_alpha = alpha(1:length(alpha_smooth))-y(1:length(alpha_smooth),2);
-    normal = sum(abs(y(1:length(alpha_smooth),1))+abs(y(1:length(alpha_smooth),2)));
-    conv_err = (sum(abs(diff_x_smooth))+sum(abs(diff_alpha_smooth)))/normal
-    err = (sum(abs(diff_x)+sum(abs(diff_alpha))))/normal
 else
-    conv_err = 10000
-    err = 10000
+    conv_err = 10^15
+    err = 10^15
 end
+if nargin == 2
 x_l = ofs_l*i+a_l*sin(b_l*t+phase_l*i);
 x_dl = a_l*b_l*cos(b_l*t+phase_l*i);
 
@@ -162,8 +169,6 @@ xy(step_time/ode_step+1:length(t)) = x_step(step_time/ode_step+1:length(t))-ofs+
 
 alpha(1:step_time/ode_step,1) = alpha_l(1:step_time/ode_step);
 alpha(step_time/ode_step+1:length(t)) = alpha_step(step_time/ode_step+1:length(t));
-
-if nargin == 2
 %     figure
 %     subplot(2,1,1)
 %     plot(t,z(:,1))

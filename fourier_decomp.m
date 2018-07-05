@@ -298,7 +298,7 @@ Kh = blkdiag(K,K,K,K,K);
 % Kh = blkdiag(K,K,K,K,K);
 
 Acont = A_t - N - B_t*Kh;
-eigenval = eig(A_t-N);
+eigenval = eig(A_t-N)
 
 eigenvalues = eig(Acont)
 figure
