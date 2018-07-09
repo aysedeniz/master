@@ -136,9 +136,9 @@ opt    = odeset('Events', @event_unstable1);
 
         diff_alpha_smooth = alpha_smooth'-y(1:length(alpha_smooth),2);
         diff_alpha = alpha(1:length(alpha_smooth))-y(1:length(alpha_smooth),2);
-        normal = norm(y(1:length(alpha_smooth),1))+norm(y(1:length(alpha_smooth),2));
-        conv_err_diff = (norm(diff_x_smooth)+norm(diff_alpha_smooth))/normal
-        err_diff = (norm(diff_x)+norm(diff_alpha))/normal
+        normal = sum(norm(y(1:length(alpha_smooth),1))+norm(y(1:length(alpha_smooth),2)));
+        conv_err_diff = (norm(diff_x_smooth)+norm(diff_alpha_smooth)))/normal
+        err_diff = ((norm(diff_x)+norm(diff_alpha)))/normal
         err = norm(x)+norm(alpha)
        
     else
