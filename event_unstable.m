@@ -1,6 +1,8 @@
 function [val, terminate, direction] = event_unstable(t,z)
-    if abs(z(1)) > 0.2 || abs(z(2)) > 0.2
-        val = 0
+global start_time
+    time_elapsed = clock - start_time;
+    if (time_elapsed(5)*60+time_elapsed(6))>200
+        val = 0;
     else
         val = 1;
     end

@@ -3,11 +3,16 @@ close all
 clc
 clear
 
-for j = 1:20
+for j = 1:100
     
     K = [69.3726  -34.4590   20.0000    0.5004];
-    T = j*0.02;
-    [~, err(j), conv_err(j)] = pend_sim(K,T);
+    [norm_nl, norm_diff, norm_conv] = pend_sim(K);
+    freq=1+j*0.2;
+    T = 1/freq;
+    [err(j), err_diff(j), conv_err(j)] = pend_sim(K,T);
+    err(j) = err(j)/norm_nl;
+    err_diff(j) = err_diff(j)/norm_diff;
+    conv_err(j) = conv_err(j)/norm_conv;
 
 k = 1;
 n = 1;
@@ -171,11 +176,17 @@ plot(real(eig(A0)),imag(eig(A0)),'*b')
 legend('aç?k devre','kapal? devre','temel harmonik')
 grid on
 end
-
+x_axis = 1.2:0.2:21;
 figure
-subplot(2,1,1)
-plot(err)
+subplot(3,1,1)
+plot(x_axis,err)
+title('nonlinear vs frequency(Hz)')
 grid on
-subplot(2,1,2)
-plot(conv_err)
+subplot(3,1,2)
+plot(x_axis,err_diff)
+title('nonlinear-linear vs frequency(Hz)')
+grid on
+subplot(3,1,3)
+plot(x_axis,conv_err)
+title('smoothed nonlinear-linear vs frequency(Hz)')
 grid on

@@ -1,6 +1,6 @@
 
 function [err, err_diff, conv_err_diff] = pend_sim(K,T)
-global Mp Mc L Beq Bp kg kt km rm rmp g Ks
+global Mp Mc L Beq Bp kg kt km rm rmp g Ks start_time
 
 Mp  = 0.21;%
 Mc  =0.57;
@@ -14,6 +14,9 @@ rmp =6.35*10^-3;
 
 if nargin<2
     T = 0.2;
+    flag = 0;
+else
+    flag = 1;
 end
 T_sim = 30;
 step_time = T_sim/2;
@@ -112,16 +115,24 @@ ode_step = 0.001;
 K_lin = K
 K_org = K;
 
-opt_lin    = odeset('Events', @event_unstable);
-
-[t,y,~,~,ie] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+opt  = odeset('Events', @event_unstable);
+opt_lin  = odeset('Events', @event_unstable1);
+start_time = clock;
+if flag == 0
+    [t,y,~,~,ie] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
         ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l,opt_lin);
-
-if isempty(ie) && mean(y(floor(2*length(y(:,2))/3),2))<0.01
-opt    = odeset('Events', @event_unstable1);
+else
+    [t,y] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+        ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l);
+    ie=[];
+end
+if isempty(ie)% && mean(y(floor(2*length(y(:,2))/3):end,2))<0.01
+   
+    start_time = clock;
     [t,z,~,~,ie] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_org,step_time),0:ode_step:T_sim,init,opt);
-    if isempty(ie) && abs(mean(z(floor(2*length(z(:,2))/3),2))-pi)< 0.01 && abs(mean(z(floor(2*length(z(:,1))/3),1)))< 0.002
+
+    if isempty(ie) %&& abs(mean(z(floor(2*length(z(:,2))/3):end,2))-pi)< 0.001 && abs(mean(z(floor(2*length(z(:,1))/3):end,1)))< 0.001
         x = z(:,1)-(ofs + a*sin(b*t+phase*i+phase_ofs));
         for j = 1:(length(z(:,1))-200)
             x_smooth(j) = mean(x(j:j+200));
@@ -136,9 +147,9 @@ opt    = odeset('Events', @event_unstable1);
 
         diff_alpha_smooth = alpha_smooth'-y(1:length(alpha_smooth),2);
         diff_alpha = alpha(1:length(alpha_smooth))-y(1:length(alpha_smooth),2);
-        normal = norm(y(1:length(alpha_smooth),1))+norm(y(1:length(alpha_smooth),2));
-        conv_err_diff = (norm(diff_x_smooth)+norm(diff_alpha_smooth))/normal
-        err_diff = (norm(diff_x)+norm(diff_alpha))/normal
+        normal = norm(z(1:length(alpha_smooth),1))+norm(z(1:length(alpha_smooth),2));
+        conv_err_diff = (norm(diff_x_smooth)+norm(diff_alpha_smooth))
+        err_diff = (norm(diff_x)+norm(diff_alpha))
         err = norm(x)+norm(alpha)
        
     else

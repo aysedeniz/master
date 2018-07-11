@@ -129,6 +129,7 @@ K = [0  0  0  0];
 % K=[43.1180   -2.7588   16.2374    4.8568];%result of nl-lin opt(short)
 K=[60.2940  175.5163    7.8803   23.3032];%result of nl-lin opt(short)
 K=10^3*[1.3643    0.0186    0.0106   -0.0022];%result of nl sys optimization(not ended)
+K = 10^3*[1.9701   -0.0253    0.3274   -0.0042];
 K_lin = K;
 K_org = K;
 

@@ -3,7 +3,7 @@ close all
 clc
 fl = 2; % cost function choice 1: nl sys error 2: nl-lin 3: smoothed nl-lin
 swarm_size = 32;
-maxiter = 100;
+maxiter = 10;
 fb = zeros(1,swarm_size);
 c1 = 2;
 c2 = 2;
@@ -61,6 +61,7 @@ for j = 1:maxiter
         end
     end
 j
+display('---------------------------------------------------------------------------------------------')
 end
          K = Kgbest;
          display("-------------------------------------end----------------------------------------")
