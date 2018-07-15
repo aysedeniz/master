@@ -204,27 +204,27 @@ alpha(step_time/ode_step+1:length(t)) = alpha_step(step_time/ode_step+1:length(t
 %     plot(t,y(:,2)+alpha,'m')
 %     title('angle')
 %     grid on
-figure
-subplot(2,1,1)
-plot(t,z(:,1)-x,'b')
-ylabel('position(m)')
-hold on
-plot(t,y(:,1)-(x-x_l),'m')
-grid on
+% figure
+% subplot(2,1,1)
+% plot(t,z(:,1)-x,'b')
+% ylabel('position(m)')
 % hold on
-% plot(t,-V_f/100,'c')
+% plot(t,y(:,1)-(x-x_l),'m')
+% grid on
+% % hold on
+% % plot(t,-V_f/100,'c')
+% % hold on
+% title('error')
+% legend('original','linear')
+% grid on
+% 
+% subplot(2,1,2)
+% plot(t,z(:,2)-alpha,'b')
+% xlabel('t(sn)')
+% ylabel('angle(rad)')
+% grid on
 % hold on
-title('error')
-legend('original','linear')
-grid on
-
-subplot(2,1,2)
-plot(t,z(:,2)-alpha,'b')
-xlabel('t(sn)')
-ylabel('angle(rad)')
-grid on
-hold on
-plot(t,y(:,2),'m')
-grid on
+% plot(t,y(:,2),'m')
+% grid on
 end
 end
