@@ -115,21 +115,16 @@ K = [0  0  0  0];
 [t,z1] = ode45(@(t,z1) original_system(t,z1,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K,step_time),0:ode_step:T_sim,init);
 
-% K0 = [60  -30   10.0000    1];
-% 69.3726  -34.4590   20.0000    0.5004
+
 % K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k);
- 
-% K = [92.2150  -15.2291    0    0];
-% K = [204.2152   58.9257  -27.3738   25.5122];
-% -27.3738   25.5122
-% K = [71.507500 -10.814800 6.076500 2.234900];
-% K0 = [0 0 0 0];
 % K = pso_sim(T_angle,c_l,phase_l,T_x,a,i,k)
-% K = [80.5215  446.1720   39.4936   24.1720];
 % K=[43.1180   -2.7588   16.2374    4.8568];%result of nl-lin opt(short)
 K=[60.2940  175.5163    7.8803   23.3032];%result of nl-lin opt(short)
 K=10^3*[1.3643    0.0186    0.0106   -0.0022];%result of nl sys optimization(not ended)
 K = 10^3*[1.9701   -0.0253    0.3274   -0.0042];
+K=10^3*[1.5    0.019    0.017   -0.004];
+% K =10^06*[2.0385   -0.0004    0.0008    0.0000];
+% K = [69.3726  -34.4590   20.0000    0.5004];
 K_lin = K;
 K_org = K;
 
@@ -139,6 +134,20 @@ K_org = K;
 [t,z] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_org,step_time),0:ode_step:T_sim,init);
 
+K = [69.3726  -34.4590   20.0000    0.5004];
+
+[t,z2] = ode45(@(t,z2) original_system(t,z2,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+    ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K,step_time),0:ode_step:T_sim,init);
+
+figure
+subplot(2,1,1)
+plot(t,z2(:,1)-z(:,1),'b')
+ylabel('position(m)')
+grid on
+subplot(2,1,2)
+plot(t,z2(:,2)-z(:,2),'b')
+ylabel('angle(rad)')
+grid on
 %%
 % xn = z(1:T_sim/(2*ode_step)+1,2);
 % alphan = z(T_sim/(2*ode_step)+1:end,2);
@@ -469,3 +478,4 @@ grid on
 % plot(t,z(:,5))
 % subplot(2,1,2)
 % plot(t,z(:,6))
+
