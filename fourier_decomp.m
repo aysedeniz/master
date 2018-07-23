@@ -312,8 +312,8 @@ figure
 plot(real(eigenval),imag(eigenval),'om')
 hold on
 plot(real(eigenvalues),imag(eigenvalues),'*c')
-hold on
-plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
+% hold on
+% plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
 legend('açýk devre','kapalý devre','temel harmonik')
 grid on
 
