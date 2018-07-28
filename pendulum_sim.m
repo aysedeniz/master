@@ -65,7 +65,7 @@ if k == 0
 
 else
     Ks = 0.77;
-    Bp = 0.1;
+    Bp = 0.05;
     g = 9.8;
     %% reference
     T_angle = 0.2;

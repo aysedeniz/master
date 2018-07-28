@@ -12,8 +12,8 @@ b=2*pi/T_x;
 
 fs = 100;
 Ls = 20*fs;
+t= 0;
 
-% x = a*sin(b*t+p)
 [t,y] = ode45(@(t,y) findangle(t,y,b,a,p),(0:(Ls-1))/fs,[0 0]);
 
 alpha = y(Ls/2+1:end,1);
@@ -36,21 +36,21 @@ frq=fs*(0:(Ls/2))/Ls;
 
 
 freq_estimate = frq(lc(loc));
-T_angle = 1/freq_estimate;
+T_angle = 1/freq_estimate
 
-phase = angle(F(lc(loc))) + pi/2;
+phase = angle(F(lc(loc))) + pi/2-pi
 
-c = amp;
+c = amp
 d = 2*pi/T_angle;
 x = a*sin(b*t+p);
-alph = c*sin(d*t+phase);
+alph = -c*sin(d*t+phase);
 
-% figure(6)
-% plot(t,y(:,1),'b')
-% hold on
-% plot(t,alph,'r')
-% hold on
-% plot(t,x,'y')
+figure
+plot(t,y(:,1),'b','LineWidth',1.5)
+hold on
+plot(t,alph,'m','LineWidth',1.5)
+legend('numerical integration output','fitted sinusoid')
+grid on
 
 
 end
