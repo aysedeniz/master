@@ -9,41 +9,45 @@ Mp = 0.21;
 Mc =0.57;
 L =0.3;
 Beq =4.3;
-Bp =0.1;
+Bp =0.05;
 kg =3.71;
 kt =0.00767;
 km =0.00767;
 rm =2.6;
 rmp =6.35*10^-3;
 g = 9.8;
-Ks = 0.77;
 
 I = Mp*L^2/3;
 
 i = 1;
 k = 1;
+if k==1
+    Ks = 0.77;
+    T_angle = 0.1;
+    c = 0.1;
+    d = 2*pi/T_angle;
+    [amp, T_x, phase] = find_position(c, T_angle, k);
+    a = amp;
+    b = 2*pi/T_x;
+    ofs = 0;
+    phase_ofs = 0;
+
+else
+    Ks = 0;
+    T_x = 1;
+    a = 0.05;
+    b = 2*pi/T_x;
+    p=0;
+
+    [amp, T_angle, phase] = find_angle(a, T_x, p);
+    c = amp;
+    d = 2*pi/T_angle;
+
+end
 
 Fs = 400;
-Ls = Fs*10;
+Ls = Fs*100;
 
-T_angle = 0.2;
-c = 0.1;
-d = 2*pi/T_angle;
-[amp, T_x, phase] = find_position(c, T_angle, k);
-a = amp;
-b = 2*pi/T_x;
-ofs = 0;
-phase_ofs = 0;
-T_x =0.2;
-
-% T_x = 1;
-% a = 0.05;
-% b = 2*pi/T_x;
-% p=0;
-% 
-% [amp, T_angle, phase] = find_angle(a, T_x, p);
-% c = amp;
-% d = 2*pi/T_angle;
 
 % t = (0:(Ls-1))/Fs;
 % x_d = a*b*cos(b*t+phase*i);
@@ -88,38 +92,52 @@ figure
 plot(p,A_n(1,:))
 
 
-%     figure(1)
-% for k=1:6
-%     subplot(2,3,k)
-%     plot((0:Ls-1)/Fs,A_n(k,:))
-% end
-% 
-%     figure(2)
-% for k=1:2
-%     subplot(2,1,k)
-%     plot((0:Ls-1)/Fs,B_n(k,:))
-% end
-
-%     figure(3)
+    figure(10)
 for k=1:6
-    f(k,:) = fft(A_n(k,:))/Ls;
-    f1(k,:) = 2*abs(f(k,:));
+    subplot(2,3,k)
+    plot((0:Ls-1)/Fs,A_n(k,:))
+end
+
+    figure(20)
+for k=1:2
+    subplot(2,1,k)
+    plot((0:Ls-1)/Fs,B_n(k,:))
+end
+
+    figure(30)
+for k=1:6
+    f(k,:) = fft(A_n(k,:));
+    fa(k,:) = f(k,1:Ls/2+1);
+    psda = (1/Ls)*abs(fa(k,:)).^2;
+    psda(2:end-1) = 2*psda(2:end-1);
+    
+    f1(k,:) = 2*abs(f(k,:)/Ls);
     f1(k,1) = f1(k,1)/2;
     f2(k,:) = f1(k,1:Ls/2+1);
     
-%     subplot(2,3,k)
-%     plot(Fs*(0:(Ls/2))/Ls,f2(k,:))
+    subplot(4,2,k)
+    plot(Fs*(0:(Ls/2))/Ls,10*log10(psda),'LineWidth',1.5)
+    axis([-10 100 -inf inf])
+    title(k)
+    grid on
 end
 
-%     figure(4)
+%     figure(40)
 for k=1:2
-    fb(k,:) = fft(B_n(k,:))/Ls;
-    fb1(k,:) = 2*abs(fb(k,:));
+    fb(k,:) = fft(B_n(k,:));
+    fbb(k,:) = fb(k,1:Ls/2+1);
+    psdb = (1/Ls)*abs(fbb(k,:)).^2;
+    psdb(2:end-1) = 2*psdb(2:end-1);
+    
+    fb1(k,:) = 2*abs(fb(k,:)/Ls);
     fb1(k,1) = fb1(k,1)/2;
     fb2(k,:) = fb1(k,1:Ls/2+1);
     
-%     subplot(2,1,k)
-%     plot(Fs*(0:(Ls/2))/Ls,fb2(k,:))
+%     subplot(1,2,k)
+    subplot(4,2,k+6)
+    plot(Fs*(0:(Ls/2))/Ls,10*log10(psdb),'LineWidth',1.5)
+    axis([-10 100 -inf inf])
+    grid on
 end
 
 loc(1) = (Ls/(T_x*Fs))+1;

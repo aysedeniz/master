@@ -20,8 +20,8 @@ T_sim = 30;
 step_time = T_sim/2;
 
 t = 0;
-i = 1;% i=0: position ref, i=1: angle reference
-k = 1;%k=0 for down 1 for up
+i = 0;% i=0: position ref, i=1: angle reference
+k = 0;%k=0 for down 1 for up
 
 if k == 0
     Ks = 0;
@@ -29,10 +29,10 @@ if k == 0
     g = 9.8;
     %% reference trajectory
     T_x = 1;
-    a = 0.07;
+    a = 0.05;
     b = 2*pi/T_x;
     ofs = 0;
-    phase_ofs = 0.1;
+    phase_ofs = 0;
 
     [amp, T_angle, phase] = find_angle(a, T_x, phase_ofs);
     c = amp;
@@ -119,13 +119,14 @@ K = [0  0  0  0];
 % K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k);
 % K = pso_sim(T_angle,c_l,phase_l,T_x,a,i,k)
 % K=[43.1180   -2.7588   16.2374    4.8568];%result of nl-lin opt(short)
-K=[60.2940  175.5163    7.8803   23.3032];%result of nl-lin opt(short)
-K=10^3*[1.3643    0.0186    0.0106   -0.0022];%result of nl sys optimization(not ended)
-K = 10^3*[1.9701   -0.0253    0.3274   -0.0042];
-K=10^3*[1.5    0.019    0.017   -0.004];
+% K=[60.2940  175.5163    7.8803   23.3032];%result of nl-lin opt(short)
+% K=10^3*[1.3643    0.0186    0.0106   -0.0022];%result of nl sys optimization(not ended)
+% K = 10^3*[1.9701   -0.0253    0.3274   -0.0042];
+% K=10^3*[1.5    0.019    0.017   -0.004];
 % K =10^06*[2.0385   -0.0004    0.0008    0.0000];
 % K = [69.3726  -34.4590   20.0000    0.5004];
-K = 10^3*[1.3643    0    0.3274   0]
+% K = 10^3*[1.3643    0    0.3274   0]
+% K=[92.2150  -15.2291  6.3378  2.2090]
 K_lin = K;
 K_org = K;
 
@@ -135,7 +136,7 @@ K_org = K;
 [t,z] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_org,step_time),0:ode_step:T_sim,init);
 
-K = [69.3726  -34.4590   20.0000    0.5004];
+% K = [69.3726  -34.4590   20.0000    0.5004];
 
 [t,z2] = ode45(@(t,z2) original_system(t,z2,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K,step_time),0:ode_step:T_sim,init);
@@ -279,10 +280,10 @@ F1 = F1(1:Ls/2+1);
 frq=fs*(0:(Ls/2))/Ls;
 
 freq_estimate = frq(lc(loc));
-T_v = 1/freq_estimate;
-phase_v = angle(F(lc(loc))) + pi/2;
-c_v = amp;
-
+T_v = 1/freq_estimate
+phase_v = angle(F(lc(loc))) + pi/2
+c_v = amp
+V_0 = c_v*sin(2*pi*t/T_v+phase_v);
 %% output info
 % z_s(:,1) = dx-(z(:,1)-a*sin(b*t));
 % z_s(:,2) = dalpha-(z(:,2)-c*sin(d*t+phase));
@@ -319,32 +320,51 @@ alpha(step_time/ode_step+1:length(t)) = alpha_step(step_time/ode_step+1:length(t
 figure(10)
 plot(t,V_o,'b');
 hold on
-plot(t,V_f,'m');
-hold on
-plot(t,V_o'+V_f,'g')
+plot(t,V_0,'m')
+% plot(t,V_f,'m');
+% hold on
+% plot(t,V_o'+V_f,'g')
 legend('openloop input','feedback','inp')
 grid on
 
 figure(20)
-subplot(2,1,1)
-plot(t,z(:,1))
-hold on
-plot(t,x,'r')
-title('position')
-hold on
-plot(t,y(:,1)+xy,'m')
+subplot(2,2,1)
+plot(t,z(:,1),'LineWidth',1.5)
+% hold on
+% plot(t,x,'r')
+% title('position')
+% hold on
+% plot(t,y(:,1)+xy,'m')
 % hold on
 % plot(t,V_f/10,'c')
 legend('original','reference','linear')
 grid on
 
-subplot(2,1,2)
-plot(t,z(:,2))
-hold on
-plot(t,alpha,'r')
-hold on
-plot(t,y(:,2)+alpha,'m')
+subplot(2,2,2)
+plot(t,z(:,2),'LineWidth',1.5)
+% hold on
+% plot(t,alpha,'r')
+% hold on
+% plot(t,y(:,2)+alpha,'m')
 title('angle')
+grid on
+
+subplot(2,2,3)
+plot(t,z(:,3),'LineWidth',1.5)
+% hold on
+% plot(t,alpha,'r')
+% hold on
+% plot(t,y(:,2)+alpha,'m')
+% title('angle')
+grid on
+
+subplot(2,2,4)
+plot(t,z(:,4),'LineWidth',1.5)
+% hold on
+% plot(t,alpha,'r')
+% hold on
+% plot(t,y(:,2)+alpha,'m')
+% title('angle')
 grid on
 
 x(step_time/ode_step+1:length(t)) = x_step(step_time/ode_step+1:length(t))-ofs*abs(k-1);

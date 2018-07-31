@@ -38,12 +38,12 @@ frq=fs*(0:(Ls/2))/Ls;
 freq_estimate = frq(lc(loc));
 T_angle = 1/freq_estimate
 
-phase = angle(F(lc(loc))) + pi/2-pi
+phase = angle(F(lc(loc))) + pi/2
 
 c = amp
 d = 2*pi/T_angle;
 x = a*sin(b*t+p);
-alph = -c*sin(d*t+phase);
+alph = c*sin(d*t+phase);
 
 figure
 plot(t,y(:,1),'b','LineWidth',1.5)
