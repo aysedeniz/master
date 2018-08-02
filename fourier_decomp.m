@@ -19,11 +19,11 @@ g = 9.8;
 
 I = Mp*L^2/3;
 
-i = 1;
-k = 1;
+i = 0;
+k = 0;
 if k==1
-    Ks = 0.77;
-    T_angle = 0.1;
+    Ks = 0.75 ;
+    T_angle = 0.2;
     c = 0.1;
     d = 2*pi/T_angle;
     [amp, T_x, phase] = find_position(c, T_angle, k);
@@ -37,9 +37,8 @@ else
     T_x = 1;
     a = 0.05;
     b = 2*pi/T_x;
-    p=0;
 
-    [amp, T_angle, phase] = find_angle(a, T_x, p);
+    [amp, T_angle, phase] = find_angle(a, T_x, k);
     c = amp;
     d = 2*pi/T_angle;
 
@@ -48,19 +47,6 @@ end
 Fs = 400;
 Ls = Fs*100;
 
-
-% t = (0:(Ls-1))/Fs;
-% x_d = a*b*cos(b*t+phase*i);
-% 
-% alpha = pi*k+c*sin(d*t+phase*abs(i-1));
-% alpha_d = c*d*cos(d*t+phase*abs(i-1));
-%    figure
-%    plot(t,alpha);
-%    figure
-%    plot(t,alpha_d);
-%    figure
-%    plot(t,x_d);
-%    
 p = 0;
 for t = (0:(Ls-1))/Fs  
    p = p+1;
@@ -69,11 +55,11 @@ for t = (0:(Ls-1))/Fs
    x_d(p) = a*b*cos(b*t+phase*i);
    V(p) = openloop_input(a, T_x, c, T_angle,i,k, phase,0, t);
    [A,B]=linearized_model(alpha(p),x_d(p),alpha_d(p),V(p));
-    for k=0:1
+    for v=0:1
         for j=1:3
-            A_n(j+(k*3),p) = A(3+k,j+1);
+            A_n(j+(v*3),p) = A(3+v,j+1);
             if j==1
-                B_n(k+1,p) = B(k+3);
+                B_n(v+1,p) = B(v+3);
             end
         end
     end
@@ -106,38 +92,43 @@ end
 
     figure(30)
 for k=1:6
-    f(k,:) = fft(A_n(k,:));
-    fa(k,:) = f(k,1:Ls/2+1);
-    psda = (1/Ls)*abs(fa(k,:)).^2;
-    psda(2:end-1) = 2*psda(2:end-1);
+    f(k,:) = fft(A_n(k,:))/Ls;
+%   to calculate psd
+%     f(k,:) = fft(A_n(k,:));
+%     fa(k,:) = f(k,1:Ls/2+1);
+%     psda = (1/Ls)*abs(fa(k,:)).^2;
+%     psda(2:end-1) = 2*psda(2:end-1);
     
-    f1(k,:) = 2*abs(f(k,:)/Ls);
+    f1(k,:) = 2*abs(f(k,:));
     f1(k,1) = f1(k,1)/2;
     f2(k,:) = f1(k,1:Ls/2+1);
     
-    subplot(4,2,k)
-    plot(Fs*(0:(Ls/2))/Ls,10*log10(psda),'LineWidth',1.5)
-    axis([-10 100 -inf inf])
-    title(k)
-    grid on
+%     subplot(4,2,k)
+%     plot(Fs*(0:(Ls/2))/Ls,10*log10(psda),'LineWidth',1.5)
+%     axis([-10 100 -inf inf])
+%     title(k)
+%     grid on
 end
 
 %     figure(40)
 for k=1:2
-    fb(k,:) = fft(B_n(k,:));
-    fbb(k,:) = fb(k,1:Ls/2+1);
-    psdb = (1/Ls)*abs(fbb(k,:)).^2;
-    psdb(2:end-1) = 2*psdb(2:end-1);
     
-    fb1(k,:) = 2*abs(fb(k,:)/Ls);
+      fb(k,:) = fft(B_n(k,:))/Ls;
+%   to calculate psd
+%     fb(k,:) = fft(B_n(k,:));
+%     fbb(k,:) = fb(k,1:Ls/2+1);
+%     psdb = (1/Ls)*abs(fbb(k,:)).^2;
+%     psdb(2:end-1) = 2*psdb(2:end-1);
+    
+    fb1(k,:) = 2*abs(fb(k,:));
     fb1(k,1) = fb1(k,1)/2;
     fb2(k,:) = fb1(k,1:Ls/2+1);
     
 %     subplot(1,2,k)
-    subplot(4,2,k+6)
-    plot(Fs*(0:(Ls/2))/Ls,10*log10(psdb),'LineWidth',1.5)
-    axis([-10 100 -inf inf])
-    grid on
+%     subplot(4,2,k+6)
+%     plot(Fs*(0:(Ls/2))/Ls,10*log10(psdb),'LineWidth',1.5)
+%     axis([-10 100 -inf inf])
+%     grid on
 end
 
 loc(1) = (Ls/(T_x*Fs))+1;
@@ -292,9 +283,9 @@ N = (2*pi/T_x)*blkdiag(-2i*eye(4),-1i*eye(4),0i*eye(4),1i*eye(4),2i*eye(4));
 K=10^3*[1.3643    0.0186    0.0106   -0.0022];
 % K = 10^3*[1.9701   -0.0253    0.3274   -0.0042];
 % K=10^3*[1.5    0.019    0.011   -0.003];
-K=10^3*[1.5    0.019    0.017   -0.004];
+% K=10^3*[1.5    0.019    0.017   -0.004];
 
-% K =10^06*[2.0385   -0.0004    0.0008    0.0000];
+K =10^06*[2.0385   -0.0004    0.0008    0.0000];
 
 % p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
 % p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
@@ -304,7 +295,9 @@ K=10^3*[1.5    0.019    0.017   -0.004];
 % K = [15.1984   82.2251   22.3265   86.1642];
 % K = [-3.5083  217.9166  -35.1181    2.9816]
 % K = pso_var(T_angle,A_t,B_t);
-
+K = [ 100 10 10 10 ];
+% K= [870.2029   -4.1985   84.3612    2.7677];
+% K =   10^3 *[1.8224    0.0040    0.4875    0.0047];
 Kh = blkdiag(K,K,K,K,K);
 % 
 % Acont = A_toep_i - N - B_toep_i*Kh;
@@ -328,11 +321,11 @@ eigenval = eig(A_t-N)
 eigenvalues = eig(Acont)
 figure
 plot(real(eigenval),imag(eigenval),'om')
-hold on
-plot(real(eigenvalues),imag(eigenvalues),'*c')
+% hold on
+% plot(real(eigenvalues),imag(eigenvalues),'*c')
 % hold on
 % plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
-legend('açýk devre','kapalý devre','temel harmonik')
+legend('open-loop','closed-loop','A_0')
 grid on
 
 % K = [ 0 0 0 0 ];

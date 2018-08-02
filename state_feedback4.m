@@ -192,7 +192,7 @@ K = fmincon(@(K) objectivefcn1(K,T,A_t,B_t),K0,[],[],[],[],lb,ub,@(K) nlc(K,A_t,
 Kh = blkdiag(K,K,K,K,K);
 
 Acont = A_t - N - B_t*Kh;
-eigenval = eig(A_t-N);
+eigenval = eig(A_t-N)
 
 eigenvalues = eig(Acont)
 

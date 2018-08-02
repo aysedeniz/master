@@ -18,7 +18,7 @@ if nargin<2
 else
     flag = 1;
 end
-T_sim = 30;
+T_sim = 50;
 step_time = T_sim/2;
 
 t = 0;
@@ -66,8 +66,8 @@ if k == 0
     alpha_dl = c_l*d_l*cos(d_l*t+phase_l*abs(i-1));
 
 else
-    Ks = 0.77;
-    Bp = 0.1;
+    Ks = 0.74;
+    Bp = 0.05;
     g = 9.8;
     %% reference
     T_angle = T;

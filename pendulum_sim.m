@@ -20,8 +20,8 @@ T_sim = 30;
 step_time = T_sim/2;
 
 t = 0;
-i = 0;% i=0: position ref, i=1: angle reference
-k = 0;%k=0 for down 1 for up
+i = 1;% i=0: position ref, i=1: angle reference
+k = 1;%k=0 for down 1 for up
 
 if k == 0
     Ks = 0;
@@ -64,7 +64,7 @@ if k == 0
     alpha_dl = c_l*d_l*cos(d_l*t+phase_l*abs(i-1));
 
 else
-    Ks = 0.77;
+    Ks = 0.75;
     Bp = 0.05;
     g = 9.8;
     %% reference
@@ -127,6 +127,11 @@ K = [0  0  0  0];
 % K = [69.3726  -34.4590   20.0000    0.5004];
 % K = 10^3*[1.3643    0    0.3274   0]
 % K=[92.2150  -15.2291  6.3378  2.2090]
+% K=10^3*[1.5    0.019    0.017   -0.004];
+% K=10^3*[1.3643    0.0186    0.0106   -0.0022];
+K=[69.3726  -34.4590   20.0000    0.5004];
+K= [870.2029   -4.1985   84.3612    2.7677];
+K=[100 10 10 10];
 K_lin = K;
 K_org = K;
 
@@ -320,10 +325,10 @@ alpha(step_time/ode_step+1:length(t)) = alpha_step(step_time/ode_step+1:length(t
 figure(10)
 plot(t,V_o,'b');
 hold on
-plot(t,V_0,'m')
-% plot(t,V_f,'m');
-% hold on
-% plot(t,V_o'+V_f,'g')
+% plot(t,V_0,'m')
+plot(t,V_f,'m');
+hold on
+plot(t,V_o'+V_f,'g')
 legend('openloop input','feedback','inp')
 grid on
 
