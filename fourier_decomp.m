@@ -333,18 +333,32 @@ plot(real(eigenvalues),imag(eigenvalues),'*c')
 legend('open-loop','closed-loop','A_0')
 grid on
 
-% K = [ 0 0 0 0 ];
-% for j = 1:100
-% %     73.2581  -27.7655   35.2485   -0.6214
-%     
-%     cost(j)= objectivefcn1(K,T_x,A_t,B_t);
-%     K = K + [1 -0.4 0.5 -0.01];
-% end
-% j=1:100;
-% figure
-% plot(j,cost)
-% grid on
-% 
+K = [ 0 0 0 0 ];
+if i==1
+    Kfin =[70.1957   -1.9268   19.7811    6.5931];
+else
+    Kfin = 10^3*[1.3470    0.0200    0.0007   -0.0030];
+end
+Nu=50000;
+step = 2*(Kfin-K)/Nu;
+for j = 1:Nu
+%     73.2581  -27.7655   35.2485   -0.6214
+    
+    cost(j)= objectivefcn1(K,T_x,A_t,B_t);
+    K = K + step;
+end
+j=1:Nu;
+figure
+plot(j,cost,'LineWidth',1.5)
+grid on
+if i==1
+    axes('position',[.2 .25 .25 .25])
+    box on
+    indexOfInterest = (j < 100) & (j > 0);
+    plot(j(indexOfInterest),cost(indexOfInterest),'LineWidth',1.5)
+    grid on
+    axis tight
+end
 
 C=eye(20,20);
 D=zeros(20,5);
