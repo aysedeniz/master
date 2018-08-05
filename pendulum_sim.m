@@ -20,8 +20,8 @@ T_sim = 30;
 step_time = T_sim/2;
 
 t = 0;
-i = 1;% i=0: position ref, i=1: angle reference
-k = 1;%k=0 for down 1 for up
+i = 0;% i=0: position ref, i=1: angle reference
+k = 0;%k=0 for down 1 for up
 
 if k == 0
     Ks = 0;
@@ -116,8 +116,8 @@ K = [0  0  0  0];
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K,step_time),0:ode_step:T_sim,init);
 
 
-% K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k);
-% K = pso_sim(T_angle,c_l,phase_l,T_x,a,i,k)
+K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
+% K = pso_var(T_angle,c_l,phase_l,T_x,a,i,k)
 % K=[43.1180   -2.7588   16.2374    4.8568];%result of nl-lin opt(short)
 % K=[60.2940  175.5163    7.8803   23.3032];%result of nl-lin opt(short)
 % K=10^3*[1.3643    0.0186    0.0106   -0.0022];%result of nl sys optimization(not ended)
@@ -129,9 +129,12 @@ K = [0  0  0  0];
 % K=[92.2150  -15.2291  6.3378  2.2090]
 % K=10^3*[1.5    0.019    0.017   -0.004];
 % K=10^3*[1.3643    0.0186    0.0106   -0.0022];
-K=[69.3726  -34.4590   20.0000    0.5004];
-K= [870.2029   -4.1985   84.3612    2.7677];
-K=[100 10 10 10];
+% K=[69.3726  -34.4590   20.0000    0.5004];
+% K= [870.2029   -4.1985   84.3612    2.7677];
+% K=[100 10 10 10];
+% K=[92.2150 15.2291 6.3378 2.2090];
+% K = 10^3*[1.3470    0.0200    0.0007   -0.0030]
+
 K_lin = K;
 K_org = K;
 
