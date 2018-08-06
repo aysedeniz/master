@@ -29,7 +29,7 @@ if k == 0
     g = 9.8;
     %% reference trajectory
     T_x = 1;
-    a = 0.05;
+    a = 0.07;
     b = 2*pi/T_x;
     ofs = 0;
     phase_ofs = 0;
@@ -338,9 +338,9 @@ grid on
 figure(20)
 subplot(2,2,1)
 plot(t,z(:,1),'LineWidth',1.5)
-% hold on
-% plot(t,x,'r')
-% title('position')
+hold on
+plot(t,x,'r')
+title('position')
 % hold on
 % plot(t,y(:,1)+xy,'m')
 % hold on
@@ -350,8 +350,8 @@ grid on
 
 subplot(2,2,2)
 plot(t,z(:,2),'LineWidth',1.5)
-% hold on
-% plot(t,alpha,'r')
+hold on
+plot(t,alpha,'r')
 % hold on
 % plot(t,y(:,2)+alpha,'m')
 title('angle')
@@ -478,21 +478,21 @@ grid on
 
 figure(60)
 if k == 0
-    plot(z(1:step_time/ode_step,1),z(1:step_time/ode_step,2),'m')
+    plot(z(1:step_time/ode_step,1),z(1:step_time/ode_step,2),'m:','LineWidth',1.5)
     hold on
-    plot(z(step_time/ode_step+1:end,1),z(step_time/ode_step+1:end,2),'g')
+    plot(z(step_time/ode_step+1:end,1),z(step_time/ode_step+1:end,2),'g:','LineWidth',1.5)
 else
-    plot(z(:,1),z(:,2),'m')
+    plot(z(:,1),z(:,2),'m','LineWidth',1.5)
 end
 
 hold on
-plot(x(1:step_time/ode_step),alpha(1:step_time/ode_step),'b','LineWidth',1.2)
+plot(x(1:step_time/ode_step),alpha(1:step_time/ode_step),'b:','LineWidth',1.2)
 hold on
-plot(x(step_time/ode_step+1:length(t)),alpha(step_time/ode_step+1:length(t)),'b','LineWidth',1.2)
+plot(x(step_time/ode_step+1:length(t)),alpha(step_time/ode_step+1:length(t)),'b:','LineWidth',1.2)
 hold on
 % plot(z(1,1),z(2,2),'>m','LineWidth',2)
-xlabel('pozisyon(m)','FontSize',14)
-ylabel('açý(rad)','FontSize',14)
+xlabel('pozition(m)','FontSize',14)
+ylabel('angle(rad)','FontSize',14)
 % legend('sistem çýktýsý','referans yörüngesi')
 P=1000;
 quiver(z(1,1),z(1,2),z(1,3)/100,z(1,4)/100,'m','MaxHeadSize',3000,'LineWidth',1.2)

@@ -36,21 +36,21 @@ frq=fs*(0:(Ls/2))/Ls;
 
 
 freq_estimate = frq(lc(loc));
-T_angle = 1/freq_estimate
+T_angle = 1/freq_estimate;
 
-phase = angle(F(lc(loc))) + pi/2
+phase = angle(F(lc(loc))) + pi/2;
 
-c = amp
+c = amp;
 d = 2*pi/T_angle;
 x = a*sin(b*t+p);
 alph = c*sin(d*t+phase);
 
-figure
-plot(t,y(:,1),'b','LineWidth',1.5)
-hold on
-plot(t,alph,'m','LineWidth',1.5)
-legend('numerical integration output','fitted sinusoid')
-grid on
+% figure
+% plot(t,y(:,1),'b','LineWidth',1.5)
+% hold on
+% plot(t,alph,'m','LineWidth',1.5)
+% legend('numerical integration output','fitted sinusoid')
+% grid on
 
 
 end
