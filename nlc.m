@@ -9,8 +9,10 @@ function [c,ceq] = nlc(K,A_t,B_t,T_angle)
 
     eigmax = max(real(eigenvalues));
     eigmin = min(real(eigenvalues));
+    Q = [0 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 10];
     ceq = [];
-    c(1) = -(eigmin+50);
+%     c(1) = -(eigmin+50);
+    c(1) = K*Q*K'-100;
 %     c(2) = eigmax+0.9;
 %     c(3) = norm(K(2:3))-20;
 %     c(1) = norm(K(4))-3;

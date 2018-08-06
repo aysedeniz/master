@@ -181,14 +181,14 @@ N = (2*pi/T)*blkdiag(-2i*eye(4),-1i*eye(4),0i*eye(4),1i*eye(4),2i*eye(4));
 % p=[-113.32 -1.94+1.84i -1.94-1.84i -0.25];
 % K=place(A0,B0,p);
 % Optimization
-% K = pso_var(T,A_t,B_t);
+K = pso_var(T,A_t,B_t);
 % K = fminunc(@(K) objectivefcn1(K,T,A_t,B_t),100*rand(1,4)-50);
 % 100*rand(1,4)-50
 % Constrained optimization
-lb = [0 -200 -20 -20];
-ub = [200 100 20 20];
-K0 = [randn*200-100 randn*200-100 randn*200-100 randn*200-100];
-K = fmincon(@(K) objectivefcn1(K,T,A_t,B_t),K0,[],[],[],[],lb,ub,@(K) nlc(K,A_t,B_t,T))
+% lb = [0 -200 -20 -20];
+% ub = [200 100 20 20];
+% K0 = [randn*200-100 randn*200-100 randn*200-100 randn*200-100];
+% K = fmincon(@(K) objectivefcn1(K,T,A_t,B_t),K0,[],[],[],[],lb,ub,@(K) nlc(K,A_t,B_t,T))
 Kh = blkdiag(K,K,K,K,K);
 
 Acont = A_t - N - B_t*Kh;

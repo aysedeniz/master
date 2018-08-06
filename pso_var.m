@@ -47,9 +47,9 @@ for j = 1:maxiter
     end
 j
 end
-         K0 = Kgbest
+         K = Kgbest
 %          K = fminunc(@(K) objectivefcn1(K,T_angle,A_t,B_t),Kgbest);
 
-K = fmincon(@(K) objectivefcn1(K,T_angle,A_t,B_t),K0,[],[],[],[],[],[],@(K) nlc(K,T_angle,A_t,B_t))
+% K = fmincon(@(K) objectivefcn1(K,T_angle,A_t,B_t),K0,[],[],[],[],[],[],@(K) nlc(K,T_angle,A_t,B_t))
 end
 

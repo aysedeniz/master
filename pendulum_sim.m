@@ -20,8 +20,8 @@ T_sim = 30;
 step_time = T_sim/2;
 
 t = 0;
-i = 0;% i=0: position ref, i=1: angle reference
-k = 0;%k=0 for down 1 for up
+i = 1;% i=0: position ref, i=1: angle reference
+k = 1;%k=0 for down 1 for up
 
 if k == 0
     Ks = 0;
@@ -134,7 +134,8 @@ K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
 % K=[100 10 10 10];
 % K=[92.2150 15.2291 6.3378 2.2090];
 % K = 10^3*[1.3470    0.0200    0.0007   -0.0030]
-
+% K = [945.8835   -0.0000    0.0000   -0.0000];
+% K=[70.1957   -1.9268   19.7811    6.5931];
 K_lin = K;
 K_org = K;
 
