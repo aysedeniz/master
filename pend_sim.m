@@ -18,12 +18,12 @@ if nargin<2
 else
     flag = 1;
 end
-T_sim = 50;
+T_sim = 10;
 step_time = T_sim/2;
 
 t = 0;
-i = 1;% i=0: position ref, i=1: angle reference
-k = 1;%k=0 for down 1 for up
+i = 0;% i=0: position ref, i=1: angle reference
+k = 0;%k=0 for down 1 for up
 
 if k == 0
     Ks = 0;
@@ -31,10 +31,10 @@ if k == 0
     g = 9.8;
     %% reference trajectory
     T_x = 1;
-    a = 0.07;
+    a = 0.05;
     b = 2*pi/T_x;
     ofs = 0;
-    phase_ofs = 0.1;
+    phase_ofs = 0;
 
     [amp, T_angle, phase] = find_angle(a, T_x, phase_ofs);
     c = amp;
@@ -66,7 +66,7 @@ if k == 0
     alpha_dl = c_l*d_l*cos(d_l*t+phase_l*abs(i-1));
 
 else
-    Ks = 0.74;
+    Ks = 0.75;
     Bp = 0.05;
     g = 9.8;
     %% reference
@@ -112,21 +112,21 @@ init = [x_l+dx alpha_l+dalpha x_dl alpha_dl 0 0];
 init_l = [dx dalpha 0 0];
 ode_step = 0.001;
 
-K_lin = K
+K_lin = K;
 K_org = K;
 
 opt  = odeset('Events', @event_unstable);
 opt_lin  = odeset('Events', @event_unstable1);
 start_time = clock;
-if flag == 0
-    [t,y,~,~,ie] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
-        ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l,opt_lin);
-else
-    [t,y] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
-        ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l);
-    ie=[];
-end
-if isempty(ie)% && mean(y(floor(2*length(y(:,2))/3):end,2))<0.01
+% if flag == 0
+%     [t,y,~,~,ie] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+%         ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l,opt_lin);
+% else
+%     [t,y] = ode45(@(t,y) linear_system(t,y,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
+%         ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K_lin,step_time),0:ode_step:T_sim,init_l);
+%     ie=[];
+% end
+% if isempty(ie)% && mean(y(floor(2*length(y(:,2))/3):end,2))<0.01
    
     start_time = clock;
     [t,z,~,~,ie] = ode45(@(t,z) original_system(t,z,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
@@ -134,34 +134,36 @@ if isempty(ie)% && mean(y(floor(2*length(y(:,2))/3):end,2))<0.01
 
     if isempty(ie) %&& abs(mean(z(floor(2*length(z(:,2))/3):end,2))-pi)< 0.001 && abs(mean(z(floor(2*length(z(:,1))/3):end,1)))< 0.001
         x = z(:,1)-(ofs + a*sin(b*t+phase*i+phase_ofs));
-        for j = 1:(length(z(:,1))-200)
-            x_smooth(j) = mean(x(j:j+200));
-        end
+%         for j = 1:(length(z(:,1))-200)
+%             x_smooth(j) = mean(x(j:j+200));
+%         end
+% 
+%         diff_x_smooth = x_smooth'-y(1:length(x_smooth),1);
+%         diff_x = x(1:length(x_smooth))-y(1:length(x_smooth),1);
+        alpha = z(:,2)-pi*k+c*sin(d*t+phase*abs(i-1));
+%         for j = 1:(length(z(:,2))-200)
+%             alpha_smooth(j) = mean(alpha(j:j+200));
+%         end
 
-        diff_x_smooth = x_smooth'-y(1:length(x_smooth),1);
-        diff_x = x(1:length(x_smooth))-y(1:length(x_smooth),1);
-        alpha = pi*k+c*sin(d*t+phase*abs(i-1));
-        for j = 1:(length(z(:,2))-200)
-            alpha_smooth(j) = mean(alpha(j:j+200));
-        end
-
-        diff_alpha_smooth = alpha_smooth'-y(1:length(alpha_smooth),2);
-        diff_alpha = alpha(1:length(alpha_smooth))-y(1:length(alpha_smooth),2);
-        normal = norm(z(1:length(alpha_smooth),1))+norm(z(1:length(alpha_smooth),2));
-        conv_err_diff = (norm(diff_x_smooth)+norm(diff_alpha_smooth))
-        err_diff = (norm(diff_x)+norm(diff_alpha))
-        err = norm(x)+norm(alpha)
+%         diff_alpha_smooth = alpha_smooth'-y(1:length(alpha_smooth),2);
+%         diff_alpha = alpha(1:length(alpha_smooth))-y(1:length(alpha_smooth),2);
+%         normal = norm(z(1:length(alpha_smooth),1))+norm(z(1:length(alpha_smooth),2));
+%         conv_err_diff = (norm(diff_x_smooth)+norm(diff_alpha_smooth))
+%         err_diff = (norm(diff_x)+norm(diff_alpha))
+        err = 5*sum(abs(x))+sum(abs(alpha))
+        conv_err_diff = 10^15;
+        err_diff = 10^15;
        
     else
-        conv_err_diff = 10^15
-        err_diff = 10^15
+        conv_err_diff = 10^15;
+        err_diff = 10^15;
         err = 10^15
     end
-else
-    conv_err_diff = 10^15
-    err_diff = 10^15
-    err = 10^15
-end
+% else
+%     conv_err_diff = 10^15;
+%     err_diff = 10^15;
+%     err = 10^15
+% end
 if nargin == 2
 x_l = ofs_l*i+a_l*sin(b_l*t+phase_l*i);
 x_dl = a_l*b_l*cos(b_l*t+phase_l*i);

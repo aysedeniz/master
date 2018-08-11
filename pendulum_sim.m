@@ -16,12 +16,12 @@ rm  =2.6;
 rmp =6.35*10^-3;
 
 
-T_sim = 30;
+T_sim = 20;
 step_time = T_sim/2;
 
 t = 0;
-i = 1;% i=0: position ref, i=1: angle reference
-k = 1;%k=0 for down 1 for up
+i = 0;% i=0: position ref, i=1: angle reference
+k = 0;%k=0 for down 1 for up
 
 if k == 0
     Ks = 0;
@@ -29,7 +29,7 @@ if k == 0
     g = 9.8;
     %% reference trajectory
     T_x = 1;
-    a = 0.07;
+    a = 0.05;
     b = 2*pi/T_x;
     ofs = 0;
     phase_ofs = 0;
@@ -104,9 +104,10 @@ end
 
 %%
 % initial conditions
-dalpha = 0.1;%randn*abs(k)/10
+dalpha = 0.2;%randn*abs(k)/10
 dx = 0.02;%randn*abs(k)/10
 init = [x_l+dx alpha_l+dalpha x_dl alpha_dl 0 0];
+% init = [0 0 0 0 0 0];
 init_l = [dx dalpha 0 0];
 ode_step = 0.001;
 
@@ -115,8 +116,10 @@ K = [0  0  0  0];
 [t,z1] = ode45(@(t,z1) original_system(t,z1,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K,step_time),0:ode_step:T_sim,init);
 
-
+tic
 K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
+toc
+% K = [69.6873   -2.0149   19.6241    6.5404]
 % K = pso_var(T_angle,c_l,phase_l,T_x,a,i,k)
 % K=[43.1180   -2.7588   16.2374    4.8568];%result of nl-lin opt(short)
 % K=[60.2940  175.5163    7.8803   23.3032];%result of nl-lin opt(short)
@@ -136,6 +139,11 @@ K = state_feedback4(T_angle,c_l,phase_l,T_x,a,i,k)
 % K = 10^3*[1.3470    0.0200    0.0007   -0.0030]
 % K = [945.8835   -0.0000    0.0000   -0.0000];
 % K=[70.1957   -1.9268   19.7811    6.5931];
+% K=10^3*[1.1414    0.0027    0.0106   -0.0042];
+% K = [69.6873 -2.0149 19.6241	6.5404]
+% K = [70.2934   -1.8605   19.7795    6.5953]
+% K=[81.0207  6.04629 19.9624	7.0706]
+% K =[33.9719   11.2044    2.5435    1.0916];
 K_lin = K;
 K_org = K;
 
@@ -150,15 +158,15 @@ K_org = K;
 [t,z2] = ode45(@(t,z2) original_system(t,z2,T_x,a,ofs,phase_ofs,T_angle,i,k,phase...
     ,amp,Tx_l,a_l,Tangle_l,phase_l,amp_l,K,step_time),0:ode_step:T_sim,init);
 
-figure
-subplot(2,1,1)
-plot(t,z2(:,1)-z(:,1),'b')
-ylabel('position(m)')
-grid on
-subplot(2,1,2)
-plot(t,z2(:,2)-z(:,2),'b')
-ylabel('angle(rad)')
-grid on
+% figure
+% subplot(2,1,1)
+% plot(t,z2(:,1)-z(:,1),'b')
+% ylabel('position(m)')
+% grid on
+% subplot(2,1,2)
+% plot(t,z2(:,2)-z(:,2),'b')
+% ylabel('angle(rad)')
+% grid on
 %%
 % xn = z(1:T_sim/(2*ode_step)+1,2);
 % alphan = z(T_sim/(2*ode_step)+1:end,2);
@@ -327,54 +335,54 @@ alpha(1:step_time/ode_step,1) = alpha_l(1:step_time/ode_step);
 alpha(step_time/ode_step+1:length(t)) = alpha_step(step_time/ode_step+1:length(t));
 
 figure(10)
-plot(t,V_o,'b');
+plot(t,V_o,'b','LineWidth',1.5);
 hold on
 % plot(t,V_0,'m')
-plot(t,V_f,'m');
+plot(t,V_f,'m','LineWidth',1.5);
 hold on
-plot(t,V_o'+V_f,'g')
-legend('openloop input','feedback','inp')
+plot(t,V_o'+V_f,'g','LineWidth',1.5)
+legend('openloop input','feedback','total input')
 grid on
 
 figure(20)
-subplot(2,2,1)
+subplot(2,1,1)
 plot(t,z(:,1),'LineWidth',1.5)
 hold on
 plot(t,x,'r')
 title('position')
-% hold on
-% plot(t,y(:,1)+xy,'m')
+hold on
+plot(t,y(:,1)+xy,'m')
 % hold on
 % plot(t,V_f/10,'c')
-legend('original','reference','linear')
+legend('system response','reference trajectory','linear')
 grid on
 
-subplot(2,2,2)
+subplot(2,1,2)
 plot(t,z(:,2),'LineWidth',1.5)
 hold on
 plot(t,alpha,'r')
-% hold on
-% plot(t,y(:,2)+alpha,'m')
+hold on
+plot(t,y(:,2)+alpha,'m')
 title('angle')
 grid on
 
-subplot(2,2,3)
-plot(t,z(:,3),'LineWidth',1.5)
-% hold on
-% plot(t,alpha,'r')
-% hold on
-% plot(t,y(:,2)+alpha,'m')
-% title('angle')
-grid on
-
-subplot(2,2,4)
-plot(t,z(:,4),'LineWidth',1.5)
-% hold on
-% plot(t,alpha,'r')
-% hold on
-% plot(t,y(:,2)+alpha,'m')
-% title('angle')
-grid on
+% subplot(2,2,3)
+% plot(t,z(:,3),'LineWidth',1.5)
+% % hold on
+% % plot(t,alpha,'r')
+% % hold on
+% % plot(t,y(:,2)+alpha,'m')
+% % title('angle')
+% grid on
+% 
+% subplot(2,2,4)
+% plot(t,z(:,4),'LineWidth',1.5)
+% % hold on
+% % plot(t,alpha,'r')
+% % hold on
+% % plot(t,y(:,2)+alpha,'m')
+% % title('angle')
+% grid on
 
 x(step_time/ode_step+1:length(t)) = x_step(step_time/ode_step+1:length(t))-ofs*abs(k-1);
 
@@ -385,51 +393,51 @@ x(step_time/ode_step+1:length(t)) = x_step(step_time/ode_step+1:length(t))-ofs*a
 % ref(step_time/ode_step+1:length(t),1) = ofs*ones(step_time/ode_step+1:length(t));
 
 figure(30)
-subplot(2,2,1)
-plot(t,z(:,1)-x,'b')
-ylabel('position(m)')
+subplot(2,1,1)
+plot(t,z(:,1)-x,'b','LineWidth',1.5)
+ylabel('position (m)')
 hold on
-plot(t,y(:,1)-(x-x_l),'m')
+plot(t,y(:,1),'m--','LineWidth',1.5)
 grid on
 % hold on
 % plot(t,-V_f/100,'c')
 % hold on
 title('error')
-legend('original','linear')
+legend('non-linear system','ltp approximation')
 grid on
 
-subplot(2,2,2)
-plot(t,z(:,2)-alpha,'b')
-xlabel('t(sn)')
-ylabel('angle(rad)')
+subplot(2,1,2)
+plot(t,z(:,2)-alpha,'b','LineWidth',1.5)
+xlabel('t (sec)')
+ylabel('angle (rad)')
 grid on
 hold on
-plot(t,y(:,2),'m')
+plot(t,y(:,2),'m--','LineWidth',1.5)
 grid on
 % hold on
 % plot(t,-V_f/100,'c')
 
-subplot(2,2,3)
-plot(t,z(:,3)-x_dl,'b')
-ylabel('velocity')
-grid on
-% hold on
-% plot(t,-V_f/100,'c')
-% hold on
-title('error')
-legend('original','linear')
-grid on
-
-subplot(2,2,4)
-plot(t,z(:,4)-alpha_dl,'b')
-ylabel('angular velocity')
-grid on
-% hold on
-% plot(t,-V_f/100,'c')
-% hold on
-title('error')
-legend('original','linear')
-grid on
+% subplot(2,2,3)
+% plot(t,z(:,3)-x_dl,'b')
+% ylabel('velocity')
+% grid on
+% % hold on
+% % plot(t,-V_f/100,'c')
+% % hold on
+% title('error')
+% legend('original','linear')
+% grid on
+% 
+% subplot(2,2,4)
+% plot(t,z(:,4)-alpha_dl,'b')
+% ylabel('angular velocity')
+% grid on
+% % hold on
+% % plot(t,-V_f/100,'c')
+% % hold on
+% title('error')
+% legend('original','linear')
+% grid on
 
 figure
 subplot(2,1,1)
@@ -482,18 +490,20 @@ if k == 0
     plot(z(1:step_time/ode_step,1),z(1:step_time/ode_step,2),'m:','LineWidth',1.5)
     hold on
     plot(z(step_time/ode_step+1:end,1),z(step_time/ode_step+1:end,2),'g:','LineWidth',1.5)
+    
 else
     plot(z(:,1),z(:,2),'m','LineWidth',1.5)
 end
 
+
 hold on
-plot(x(1:step_time/ode_step),alpha(1:step_time/ode_step),'b:','LineWidth',1.2)
+plot(x(1:step_time/ode_step),alpha(1:step_time/ode_step),'b','LineWidth',1.2)
 hold on
-plot(x(step_time/ode_step+1:length(t)),alpha(step_time/ode_step+1:length(t)),'b:','LineWidth',1.2)
+plot(x(step_time/ode_step+1:length(t))+ofs,alpha(step_time/ode_step+1:length(t)),'b','LineWidth',1.2)
 hold on
 % plot(z(1,1),z(2,2),'>m','LineWidth',2)
-xlabel('pozition(m)','FontSize',14)
-ylabel('angle(rad)','FontSize',14)
+xlabel('position (m)','FontSize',14)
+ylabel('angle (rad)','FontSize',14)
 % legend('sistem çýktýsý','referans yörüngesi')
 P=1000;
 quiver(z(1,1),z(1,2),z(1,3)/100,z(1,4)/100,'m','MaxHeadSize',3000,'LineWidth',1.2)
@@ -502,7 +512,7 @@ quiver(z(350,1),z(350,2),z(350,3)/100,z(350,4)/100,'m','MaxHeadSize',2000,'LineW
 hold on
 quiver(z(P,1),z(P,2),z(P,3)/100,z(P,4)/100,'m','MaxHeadSize',2000,'LineWidth',1.2)
 grid on
-
+legend('system response','','reference trajectory')
 % figure
 % subplot(2,1,1)
 % plot(t,z(:,5))

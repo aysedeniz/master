@@ -10,7 +10,7 @@ I = Mp*L^2/3;
 
 b=2*pi/T_x;
 
-fs = 100;
+fs = 1000;
 Ls = 20*fs;
 t= 0;
 
@@ -29,18 +29,18 @@ F1 = F1(1:Ls/2+1);
 
 frq=fs*(0:(Ls/2))/Ls;
 
-% F1(lc(loc))=0;
+F1(lc(loc))=0;
 
 % figure
 % plot(fs*(0:(Ls/2))/Ls,F1)
 
 
 freq_estimate = frq(lc(loc));
-T_angle = 1/freq_estimate;
+T_angle = 1/freq_estimate
 
-phase = angle(F(lc(loc))) + pi/2;
+phase = angle(F(lc(loc))) + pi/2
 
-c = amp;
+c = amp
 d = 2*pi/T_angle;
 x = a*sin(b*t+p);
 alph = c*sin(d*t+phase);

@@ -19,8 +19,8 @@ g = 9.8;
 
 I = Mp*L^2/3;
 
-i = 1;
-k = 1;
+i = 0;
+k = 0;
 if k==1
     Ks = 0.75 ;
     T_angle = 0.2;
@@ -93,7 +93,7 @@ end
     figure(30)
 for k=1:6
     f(k,:) = fft(A_n(k,:))/Ls;
-%   to calculate psd
+% %   to calculate psd
 %     f(k,:) = fft(A_n(k,:));
 %     fa(k,:) = f(k,1:Ls/2+1);
 %     psda = (1/Ls)*abs(fa(k,:)).^2;
@@ -119,12 +119,11 @@ for k=1:2
 %     fbb(k,:) = fb(k,1:Ls/2+1);
 %     psdb = (1/Ls)*abs(fbb(k,:)).^2;
 %     psdb(2:end-1) = 2*psdb(2:end-1);
-    
+%     
     fb1(k,:) = 2*abs(fb(k,:));
     fb1(k,1) = fb1(k,1)/2;
     fb2(k,:) = fb1(k,1:Ls/2+1);
     
-%     subplot(1,2,k)
 %     subplot(4,2,k+6)
 %     plot(Fs*(0:(Ls/2))/Ls,10*log10(psdb),'LineWidth',1.5)
 %     axis([-10 100 -inf inf])
@@ -302,9 +301,13 @@ K=10^3*[1.3643    0.0186    0.0106   -0.0022];
 % K=[92.2150 15.2291 6.3378 2.2090];
 % K=[16.5808   16.2380   11.6798    0.1590]
 % K=[92.2150 15.2291 6.3378 2.2090];
-K = 10^3*[1.3470    0.0200    0.0007   -0.0030]
-K = [925.8542    0.0000   -0.0000    0.0000];
+% K = 10^3*[1.3470    0.0200    0.0007   -0.0030]
+% K = [925.8542    0.0000   -0.0000    0.0000];
+K = [69.6873   -2.0149   19.6241    6.5404];
 Kh = blkdiag(K,K,K,K,K);
+% 1.0e+03 *
+
+%     1.3879    0.0005    0.0059   -0.0051
 % 
 % Acont = A_toep_i - N - B_toep_i*Kh;
 % 
@@ -326,43 +329,52 @@ eigenval = eig(A_t-N)
 
 eigenvalues = eig(Acont)
 figure
-plot(real(eigenval),imag(eigenval),'om')
-hold on
-plot(real(eigenvalues),imag(eigenvalues),'*c')
+% plot(real(eigenval),imag(eigenval),'om')
 % hold on
-% plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
-legend('open-loop','closed-loop','A_0')
+% plot(real(eig(A0)),imag(eig(A0)),'+g')
+% hold on
+plot(real(eigenvalues),imag(eigenvalues),'*c')
+hold on
+plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
+legend('open-loop','A_0')
 grid on
 
-K = [ 0 0 0 0 ];
-if i==1
-    Kfin =[70.1957   -1.9268   19.7811    6.5931];
-else
-    Kfin = 10^3*[1.3470    0.0200    0.0007   -0.0030];
-end
-Nu=50000;
-step = 2*(Kfin-K)/Nu;
-for j = 1:Nu
-%     73.2581  -27.7655   35.2485   -0.6214
-    
-    cost(j)= objectivefcn1(K,T_x,A_t,B_t);
-    K = K + step;
-end
-j=1:Nu;
-figure
-plot(j,cost,'LineWidth',1.5)
-grid on
-if i==1
-    axes('position',[.2 .25 .25 .25])
-    box on
-    indexOfInterest = (j < 100) & (j > 0);
-    plot(j(indexOfInterest),cost(indexOfInterest),'LineWidth',1.5)
-    grid on
-    axis tight
-end
-
-C=eye(20,20);
-D=zeros(20,5);
-sys=ss(A_t-N,B_t,C,D);
-htfs=idtf(sys);
+% K = [ 0 0 0 0 ];
+% if i==0
+%     Kfin =[70.1957   -1.9268   19.7811    6.5931];
+%     Kfin = [69.6873   -2.0149   19.6241    6.5404];
+% 
+% else
+%     Kfin = 10^3*[1.3470    0.0200    0.0007   -0.0030];
+%     Kfin=10^3*[1.3643    0.0186    0.0106   -0.0022];
+%     Kfin=10^3*[1.1414    0.0027    0.0106   -0.0042];
+% end
+% Nu=50000;
+% step = 2*(Kfin-K)/Nu;
+% for j = 1:Nu
+% %     73.2581  -27.7655   35.2485   -0.6214
+%     Kh = blkdiag(K,K,K,K,K);
+%     cost(j) = max(real(eig(A_t - N - B_t*Kh)));
+%     eigmin(j) = min(real(eig(A_t - N - B_t*Kh)));
+%     K = K + step;
+% end
+% j=1:Nu;
+% figure
+% plot(j,cost,'LineWidth',1.5)
+% grid on
+% if i==1
+%     axes('position',[.2 .25 .25 .25])
+%     box on
+%     indexOfInterest = (j < 100) & (j > 0);
+%     plot(j(indexOfInterest),cost(indexOfInterest),'LineWidth',1.5)
+%     grid on
+%     axis tight
+% end
+% figure
+% plot(j,eigmin)
+% 
+% C=eye(20,20);
+% D=zeros(20,5);
+% sys=ss(A_t-N,B_t,C,D);
+% htfs=idtf(sys);
 

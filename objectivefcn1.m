@@ -35,6 +35,7 @@ eigenvalues = eig(Acont);
 eigmax = max(real(eigenvalues));
 f=eigmax;
 % eigmin = min(real(eigenvalues));
+% f2=eigmin;
 % f = 4000*eigmax+0.5*eigmin+7*norm(K(3:4))+norm(K(1:2));
 % f = norm(K(4));
 
