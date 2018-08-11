@@ -150,7 +150,7 @@ start_time = clock;
 %         normal = norm(z(1:length(alpha_smooth),1))+norm(z(1:length(alpha_smooth),2));
 %         conv_err_diff = (norm(diff_x_smooth)+norm(diff_alpha_smooth))
 %         err_diff = (norm(diff_x)+norm(diff_alpha))
-        err = 5*sum(abs(x))+sum(abs(alpha))
+        err = sum(abs(x))+sum(abs(alpha))
         conv_err_diff = 10^15;
         err_diff = 10^15;
        

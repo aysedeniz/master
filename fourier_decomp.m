@@ -19,8 +19,8 @@ g = 9.8;
 
 I = Mp*L^2/3;
 
-i = 0;
-k = 0;
+i = 1;
+k = 1;
 if k==1
     Ks = 0.75 ;
     T_angle = 0.2;
@@ -329,13 +329,13 @@ eigenval = eig(A_t-N)
 
 eigenvalues = eig(Acont)
 figure
-% plot(real(eigenval),imag(eigenval),'om')
-% hold on
-% plot(real(eig(A0)),imag(eig(A0)),'+g')
-% hold on
-plot(real(eigenvalues),imag(eigenvalues),'*c')
+plot(real(eigenval),imag(eigenval),'om')
 hold on
-plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
+plot(real(eig(A0)),imag(eig(A0)),'+g')
+hold on
+% plot(real(eigenvalues),imag(eigenvalues),'*c')
+% hold on
+% plot(real(eig(A0-B0*K)),imag(eig(A0-B0*K)),'*b')
 legend('open-loop','A_0')
 grid on
 
